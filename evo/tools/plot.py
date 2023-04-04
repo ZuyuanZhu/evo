@@ -614,8 +614,8 @@ def error_array(ax: plt.Axes, err_array: ListOrArray,
                 statistics: typing.Optional[typing.Dict[str, float]] = None,
                 threshold: typing.Optional[float] = None,
                 cumulative: bool = False, color: str = 'grey',
-                name: str = "error", title: str = "", xlabel: str = "index",
-                ylabel: typing.Optional[str] = None, subplot_arg: int = 111,
+                name: str = "error", title: str = "", xlabel: str = "Time (s)",
+                ylabel: typing.Optional[str] = 'APE (m)', subplot_arg: int = 111,
                 linestyle: str = "-", marker: typing.Optional[str] = None):
     """
     high-level function for plotting raw error values of a metric

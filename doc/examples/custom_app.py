@@ -16,11 +16,14 @@ trajA_est_file = base_loc + "KF_GBA_0_sorted.csv"
 traj_ref_file = base_loc + "00_time_poses.txt"
 
 trajB_est_file = base_loc + "KF_GBA_1_sorted.csv"
+trajB_est_file_time = base_loc + "KF_GBA_1_sorted_cont.csv"
 
 traj_ref_A = file_interface.read_tum_trajectory_file(traj_ref_file)
 traj_ref_B = file_interface.read_tum_trajectory_file(traj_ref_file)
 traj_est_A = file_interface.read_tum_trajectory_file(trajA_est_file)
 traj_est_B = file_interface.read_tum_trajectory_file(trajB_est_file)
+traj_est_B_time = file_interface.read_tum_trajectory_file(trajB_est_file_time)
+
 
 print("registering and aligning trajectories")
 traj_ref_A, traj_est_A = sync.associate_trajectories(traj_ref_A, traj_est_A)
@@ -53,7 +56,7 @@ import matplotlib.pyplot as plt
 print("plotting")
 plot_collection = plot.PlotCollection("Example")
 # metric values
-fig_1 = plt.figure(figsize=(10, 5))
+fig_1 = plt.figure(figsize=(6.2, 3.5))
 
 ape_metric_error_AB = np.append(ape_metric_A.error, ape_metric_B.error)
 ape_statistics_AB = {}
@@ -69,14 +72,14 @@ ape_metric_AB = ape_metric_A
 #                  name="APE", title=str(ape_metric_A))
 # plot.error_array(fig_1.gca(), ape_metric_B.error, statistics=ape_statistics_B,
 #                  name="APE", title=str(ape_metric_B))
-
-plot.error_array(fig_1.gca(), ape_metric_error_AB, statistics=ape_statistics_AB,
+timestamp = np.append(traj_est_A.timestamps, traj_est_B_time.timestamps)
+plot.error_array(fig_1.gca(), ape_metric_error_AB, timestamp, statistics=ape_statistics_AB,
                  name="APE", title=str(ape_metric_AB))
 
 plot_collection.add_figure("raw", fig_1)
 
 # trajectory colormapped with error
-fig_2 = plt.figure(figsize=(10, 5))
+fig_2 = plt.figure(figsize=(6, 3.5))
 plot_mode = plot.PlotMode.xz
 ax = plot.prepare_axis(fig_2, plot_mode)
 plot.traj(ax, plot_mode, traj_ref_A, '--', 'gray', 'reference')
