@@ -11,7 +11,7 @@ print("loading trajectories")
 # traj_est = file_interface.read_tum_trajectory_file(
 #     "../../test/data/fr2_desk_ORB.txt")
 
-base_loc = "/home/zuyuan/rasberry_ws/src/data_kitti/OUTPUT/Traj_Vis/seq00_agentA0-320_agentB1378-1698_test/"
+base_loc = "/home/zuyuan/Documents/dataset/kitti/Traj_Vis/seq00_agentA0-320_agentB1378-1698_test/"
 trajA_est_file = base_loc + "KF_GBA_0_sorted.csv"
 traj_ref_file = base_loc + "00_time_poses.txt"
 
@@ -79,11 +79,11 @@ plot.error_array(fig_1.gca(), ape_metric_error_AB, timestamp, statistics=ape_sta
 plot_collection.add_figure("raw", fig_1)
 
 # trajectory colormapped with error
-fig_2 = plt.figure(figsize=(6, 3.5))
+fig_2 = plt.figure(figsize=(9, 5))
 plot_mode = plot.PlotMode.xz
 ax = plot.prepare_axis(fig_2, plot_mode)
 plot.traj(ax, plot_mode, traj_ref_A, '--', 'gray', 'reference')
-plot.traj(ax, plot_mode, traj_ref_B, '--', 'gray', 'reference')
+plot.traj(ax, plot_mode, traj_ref_B, '--', 'gray')
 
 # calculate the minimum and maximum values for the color map
 min_ape = min(ape_statistics_A["min"], ape_statistics_B["min"])
