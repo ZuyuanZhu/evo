@@ -408,6 +408,7 @@ def traj_colormap(ax: plt.Axes, traj: trajectory.PosePath3D,
         cbar = fig.colorbar(
             mapper, ticks=[min_map, (max_map - (max_map - min_map) / 2), max_map],
             ax=ax)
+        cbar.ax.set_aspect(2)
         cbar.ax.set_yticklabels([
             "{0:0.3f}".format(min_map),
             "{0:0.3f}".format(max_map - (max_map - min_map) / 2),
