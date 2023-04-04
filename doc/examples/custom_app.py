@@ -5,6 +5,32 @@ from evo.core import trajectory, sync, metrics
 from evo.tools import file_interface
 import numpy as np
 
+
+def combined_ape(traj_A, traj_B, ref_A, ref_B):
+
+    # Merge the two trajectories A and B into a single trajectory C
+    trajectory_AB = np.concatenate((traj_A, traj_B), axis=0)
+    ref_AB = np.concatenate((ref_A, ref_B), axis=0)
+
+    # Calculate the APE for each pose in trajectory C
+    ape_C = np.linalg.norm(trajectory_AB - ref_AB, axis=1)
+
+    # Compute the statistics of the APE values for trajectory C
+    ape_statistics_AB = {
+        'rmse': np.sqrt(np.mean(ape_C ** 2)),
+        'mean': np.mean(ape_C),
+        'median': np.median(ape_C),
+        'std': np.std(ape_C),
+        'min': np.min(ape_C),
+        'max': np.max(ape_C),
+        'sse': np.sum(ape_C ** 2)
+    }
+
+    print("APE statistics for combined trajectory AB:", ape_statistics_AB)
+    return ape_statistics_AB, ape_C
+
+
+
 print("loading trajectories")
 # traj_ref = file_interface.read_tum_trajectory_file(
 #     "../../test/data/fr2_desk_groundtruth.txt")
@@ -58,16 +84,19 @@ plot_collection = plot.PlotCollection("Example")
 # metric values
 fig_1 = plt.figure(figsize=(6.2, 3.5))
 
-ape_metric_error_AB = np.append(ape_metric_A.error, ape_metric_B.error)
-ape_statistics_AB = {}
-ape_statistics_AB['rmse'] = (ape_statistics_A['rmse'] + ape_statistics_B['rmse'])/2
-ape_statistics_AB['mean'] = (ape_statistics_A['mean'] + ape_statistics_B['mean'])/2
-ape_statistics_AB['median'] = (ape_statistics_A['median'] + ape_statistics_B['median'])/2
-ape_statistics_AB['std'] = (ape_statistics_A['std'] + ape_statistics_B['std'])/2
-ape_statistics_AB['min'] = min(ape_statistics_A['min'], ape_statistics_B['min'])
-ape_statistics_AB['max'] = max(ape_statistics_A['max'], ape_statistics_B['max'])
+# ape_metric_error_AB = np.append(ape_metric_A.error, ape_metric_B.error)
+# ape_statistics_AB = {}
+# ape_statistics_AB['rmse'] = (ape_statistics_A['rmse'] + ape_statistics_B['rmse'])/2
+# ape_statistics_AB['mean'] = (ape_statistics_A['mean'] + ape_statistics_B['mean'])/2
+# ape_statistics_AB['median'] = (ape_statistics_A['median'] + ape_statistics_B['median'])/2
+# ape_statistics_AB['std'] = (ape_statistics_A['std'] + ape_statistics_B['std'])/2
+# ape_statistics_AB['min'] = min(ape_statistics_A['min'], ape_statistics_B['min'])
+# ape_statistics_AB['max'] = max(ape_statistics_A['max'], ape_statistics_B['max'])
 ape_metric_AB = ape_metric_A
 
+ape_statistics_AB, ape_metric_error_AB = combined_ape(traj_est_A.positions_xyz, traj_est_B.positions_xyz, traj_ref_A.positions_xyz, traj_ref_B.positions_xyz)
+ape_statistics_AB.pop('sse')
+# print(f"ape_statistics_AB: {ape_statistics_AB}")
 # plot.error_array(fig_1.gca(), ape_metric_A.error, statistics=ape_statistics_A,
 #                  name="APE", title=str(ape_metric_A))
 # plot.error_array(fig_1.gca(), ape_metric_B.error, statistics=ape_statistics_B,
@@ -79,7 +108,7 @@ plot.error_array(fig_1.gca(), ape_metric_error_AB, timestamp, statistics=ape_sta
 plot_collection.add_figure("raw", fig_1)
 
 # trajectory colormapped with error
-fig_2 = plt.figure(figsize=(9, 5))
+fig_2 = plt.figure(figsize=(7, 7))
 plot_mode = plot.PlotMode.xz
 ax = plot.prepare_axis(fig_2, plot_mode)
 plot.traj(ax, plot_mode, traj_ref_A, '--', 'gray', 'reference')
@@ -117,3 +146,6 @@ plot_collection.add_figure("traj (error)", fig_2)
 # plot_collection.add_figure("traj (speed)", fig_3)
 
 plot_collection.show()
+
+
+
