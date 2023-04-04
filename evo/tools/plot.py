@@ -403,14 +403,24 @@ def traj_colormap(ax: plt.Axes, traj: trajectory.PosePath3D,
         set_aspect_equal(ax)
     if fig is None:
         fig = plt.gcf()
-    cbar = fig.colorbar(
-        mapper, ticks=[min_map, (max_map - (max_map - min_map) / 2), max_map],
-        ax=ax)
-    cbar.ax.set_yticklabels([
-        "{0:0.3f}".format(min_map),
-        "{0:0.3f}".format(max_map - (max_map - min_map) / 2),
-        "{0:0.3f}".format(max_map)
-    ])
+    colorbars = [x for x in fig.axes]
+    if len(colorbars) < 2:
+        cbar = fig.colorbar(
+            mapper, ticks=[min_map, (max_map - (max_map - min_map) / 2), max_map],
+            ax=ax)
+        cbar.ax.set_yticklabels([
+            "{0:0.3f}".format(min_map),
+            "{0:0.3f}".format(max_map - (max_map - min_map) / 2),
+            "{0:0.3f}".format(max_map)
+        ])
+    # cbar = fig.colorbar(
+    #     mapper, ticks=[min_map, (max_map - (max_map - min_map) / 2), max_map],
+    #     ax=ax)
+    # cbar.ax.set_yticklabels([
+    #     "{0:0.3f}".format(min_map),
+    #     "{0:0.3f}".format(max_map - (max_map - min_map) / 2),
+    #     "{0:0.3f}".format(max_map)
+    # ])
     if title:
         ax.legend(frameon=True)
         ax.set_title(title)

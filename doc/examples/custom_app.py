@@ -3,6 +3,7 @@
 print("loading required evo modules")
 from evo.core import trajectory, sync, metrics
 from evo.tools import file_interface
+import numpy as np
 
 print("loading trajectories")
 # traj_ref = file_interface.read_tum_trajectory_file(
@@ -52,28 +53,47 @@ import matplotlib.pyplot as plt
 print("plotting")
 plot_collection = plot.PlotCollection("Example")
 # metric values
-fig_1 = plt.figure(figsize=(16, 16))
-plot.error_array(fig_1.gca(), ape_metric_A.error, statistics=ape_statistics_A,
-                 name="APE", title=str(ape_metric_A))
-plot.error_array(fig_1.gca(), ape_metric_B.error, statistics=ape_statistics_B,
-                 name="APE", title=str(ape_metric_B))
+fig_1 = plt.figure(figsize=(10, 5))
+
+ape_metric_error_AB = np.append(ape_metric_A.error, ape_metric_B.error)
+ape_statistics_AB = {}
+ape_statistics_AB['rmse'] = (ape_statistics_A['rmse'] + ape_statistics_B['rmse'])/2
+ape_statistics_AB['mean'] = (ape_statistics_A['mean'] + ape_statistics_B['mean'])/2
+ape_statistics_AB['median'] = (ape_statistics_A['median'] + ape_statistics_B['median'])/2
+ape_statistics_AB['std'] = (ape_statistics_A['std'] + ape_statistics_B['std'])/2
+ape_statistics_AB['min'] = min(ape_statistics_A['min'], ape_statistics_B['min'])
+ape_statistics_AB['max'] = max(ape_statistics_A['max'], ape_statistics_B['max'])
+ape_metric_AB = ape_metric_A
+
+# plot.error_array(fig_1.gca(), ape_metric_A.error, statistics=ape_statistics_A,
+#                  name="APE", title=str(ape_metric_A))
+# plot.error_array(fig_1.gca(), ape_metric_B.error, statistics=ape_statistics_B,
+#                  name="APE", title=str(ape_metric_B))
+
+plot.error_array(fig_1.gca(), ape_metric_error_AB, statistics=ape_statistics_AB,
+                 name="APE", title=str(ape_metric_AB))
+
 plot_collection.add_figure("raw", fig_1)
 
 # trajectory colormapped with error
-fig_2 = plt.figure(figsize=(16, 16))
+fig_2 = plt.figure(figsize=(10, 5))
 plot_mode = plot.PlotMode.xz
 ax = plot.prepare_axis(fig_2, plot_mode)
 plot.traj(ax, plot_mode, traj_ref_A, '--', 'gray', 'reference')
 plot.traj(ax, plot_mode, traj_ref_B, '--', 'gray', 'reference')
 
+# calculate the minimum and maximum values for the color map
+min_ape = min(ape_statistics_A["min"], ape_statistics_B["min"])
+max_ape = max(ape_statistics_A["max"], ape_statistics_B["max"])
+
 plot.traj_colormap(ax, traj_est_A, ape_metric_A.error, plot_mode,
-                   min_map=ape_statistics_A["min"],
-                   max_map=ape_statistics_A["max"],
+                   min_map=min_ape,
+                   max_map=max_ape,
                    title="APE mapped onto trajectory")
 plot.traj_colormap(ax, traj_est_B, ape_metric_B.error, plot_mode,
-                   min_map=ape_statistics_B["min"],
-                   max_map=ape_statistics_B["max"],
-                   title="APE mapped onto trajectory")
+                   min_map=min_ape,
+                   max_map=max_ape,
+                   fig=plt.gcf())
 plot_collection.add_figure("traj (error)", fig_2)
 
 # # trajectory colormapped with speed
