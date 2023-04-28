@@ -6,12 +6,12 @@ from evo.tools import file_interface, plot
 
 
 class APECalculator:
-    def __init__(self, base_loc, traj_ref_file, trajA_est_file, trajB_est_file, trajB_est_file_time):
+    def __init__(self, base_loc, traj_ref_file, trajA_est_file, trajB_est_file, trajB_est_file_cont):
         self.base_loc = base_loc
         self.traj_ref_file = traj_ref_file
         self.trajA_est_file = trajA_est_file
         self.trajB_est_file = trajB_est_file
-        self.trajB_est_file_time = trajB_est_file_time
+        self.trajB_est_file_cont = trajB_est_file_cont
 
         self.traj_ref_A = None
         self.traj_ref_B = None
@@ -26,7 +26,7 @@ class APECalculator:
         traj_ref_file_ = os.path.join(self.base_loc, self.traj_ref_file)
         trajA_est_file_ = os.path.join(self.base_loc, self.trajA_est_file)
         trajB_est_file_ = os.path.join(self.base_loc, self.trajB_est_file)
-        trajB_est_file_time_ = os.path.join(self.base_loc, self.trajB_est_file_time)
+        trajB_est_file_time_ = os.path.join(self.base_loc, self.trajB_est_file_cont)
 
         self.traj_ref_A = file_interface.read_tum_trajectory_file(traj_ref_file_)
         self.traj_ref_B = file_interface.read_tum_trajectory_file(traj_ref_file_)
@@ -145,9 +145,9 @@ if __name__ == "__main__":
     traj_ref_file = "02_time_poses.txt"
     trajA_est_file = "KF_GBA_0_sorted.csv"
     trajB_est_file = "KF_GBA_1_sorted.csv"
-    trajB_est_file_time = "KF_GBA_1_sorted_cont.csv"
+    trajB_est_file_cont = "KF_GBA_1_sorted_cont.csv"
 
-    calculator = APECalculator(base_loc, traj_ref_file, trajA_est_file, trajB_est_file, trajB_est_file_time)
+    calculator = APECalculator(base_loc, traj_ref_file, trajA_est_file, trajB_est_file, trajB_est_file_cont)
     calculator.load_trajectories()
     calculator.register_and_align_trajectories()
     calculator.calculate_ape()
