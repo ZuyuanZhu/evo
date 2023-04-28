@@ -4,10 +4,11 @@ print("loading required evo modules")
 from evo.core import trajectory, sync, metrics
 from evo.tools import file_interface
 import numpy as np
+import os
+import json
 
 
 def combined_ape(traj_A, traj_B, ref_A, ref_B):
-
     # Merge the two trajectories A and B into a single trajectory C
     trajectory_AB = np.concatenate((traj_A, traj_B), axis=0)
     ref_AB = np.concatenate((ref_A, ref_B), axis=0)
@@ -30,17 +31,17 @@ def combined_ape(traj_A, traj_B, ref_A, ref_B):
     return ape_statistics_AB, ape_C
 
 
-
 print("loading trajectories")
 # traj_ref = file_interface.read_tum_trajectory_file(
 #     "../../test/data/fr2_desk_groundtruth.txt")
 # traj_est = file_interface.read_tum_trajectory_file(
 #     "../../test/data/fr2_desk_ORB.txt")
 
-base_loc = "/home/zuyuan/Documents/dataset/kitti/Traj_Vis/seq00_1-2_10-11/"
-trajA_est_file = base_loc + "KF_GBA_0_sorted.csv"
-traj_ref_file = base_loc + "00_time_poses.txt"
+# change the values
+base_loc = "/home/zuyuan/Documents/dataset/kitti/Traj_Vis/Self_trained_ORBvoc_seq00/seq02_2-3.5_12-13/"
+traj_ref_file = base_loc + "02_time_poses.txt"
 
+trajA_est_file = base_loc + "KF_GBA_0_sorted.csv"
 trajB_est_file = base_loc + "KF_GBA_1_sorted.csv"
 trajB_est_file_time = base_loc + "KF_GBA_1_sorted_cont.csv"
 
@@ -49,7 +50,6 @@ traj_ref_B = file_interface.read_tum_trajectory_file(traj_ref_file)
 traj_est_A = file_interface.read_tum_trajectory_file(trajA_est_file)
 traj_est_B = file_interface.read_tum_trajectory_file(trajB_est_file)
 traj_est_B_time = file_interface.read_tum_trajectory_file(trajB_est_file_time)
-
 
 print("registering and aligning trajectories")
 traj_ref_A, traj_est_A = sync.associate_trajectories(traj_ref_A, traj_est_A)
@@ -94,7 +94,19 @@ fig_1 = plt.figure(figsize=(6.2, 3.5))
 # ape_statistics_AB['max'] = max(ape_statistics_A['max'], ape_statistics_B['max'])
 ape_metric_AB = ape_metric_A
 
-ape_statistics_AB, ape_metric_error_AB = combined_ape(traj_est_A.positions_xyz, traj_est_B.positions_xyz, traj_ref_A.positions_xyz, traj_ref_B.positions_xyz)
+ape_statistics_AB, ape_metric_error_AB = combined_ape(traj_est_A.positions_xyz, traj_est_B.positions_xyz,
+                                                      traj_ref_A.positions_xyz, traj_ref_B.positions_xyz)
+
+# save the ape_statistics_AB to local file
+results_loc = base_loc + 'results/'
+if not os.path.exists(results_loc):
+    os.makedirs(results_loc)
+with open(results_loc + "agentAB_ape_cont_statistics.csv", "w") as file:
+    # write the dictionary to the file in JSON format
+    json.dump('APE statistics for combined trajectory AB: ', file)
+    json.dump(ape_statistics_AB, file)
+
+# do not plot sse
 ape_statistics_AB.pop('sse')
 # print(f"ape_statistics_AB: {ape_statistics_AB}")
 # plot.error_array(fig_1.gca(), ape_metric_A.error, statistics=ape_statistics_A,
@@ -146,6 +158,3 @@ plot_collection.add_figure("traj (error)", fig_2)
 # plot_collection.add_figure("traj (speed)", fig_3)
 
 plot_collection.show()
-
-
-
