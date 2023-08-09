@@ -7,12 +7,11 @@ from copy import deepcopy
 
 
 class APECalculator:
-    def __init__(self, base_loc, traj_ref_file, trajA_est_file, trajB_est_file, trajB_est_file_cont):
+    def __init__(self, base_loc, traj_ref_file, trajA_est_file, trajB_est_file):
         self.base_loc = base_loc
         self.traj_ref_file = traj_ref_file
         self.trajA_est_file = trajA_est_file
         self.trajB_est_file = trajB_est_file
-        self.trajB_est_file_cont = trajB_est_file_cont
 
         self.traj_ref_A = None
         self.traj_ref_B = None
@@ -27,13 +26,11 @@ class APECalculator:
         traj_ref_file_ = os.path.join(self.base_loc, self.traj_ref_file)
         trajA_est_file_ = os.path.join(self.base_loc, self.trajA_est_file)
         trajB_est_file_ = os.path.join(self.base_loc, self.trajB_est_file)
-        trajB_est_file_time_ = os.path.join(self.base_loc, self.trajB_est_file_cont)
 
         self.traj_ref_A = file_interface.read_tum_trajectory_file(traj_ref_file_)
         self.traj_ref_B = file_interface.read_tum_trajectory_file(traj_ref_file_)
         self.traj_est_A = file_interface.read_tum_trajectory_file(trajA_est_file_)
         self.traj_est_B = file_interface.read_tum_trajectory_file(trajB_est_file_)
-        self.traj_est_B_time = file_interface.read_tum_trajectory_file(trajB_est_file_time_)
 
     def register_and_align_trajectories(self):
         self.traj_ref_A, self.traj_est_A = sync.associate_trajectories(self.traj_ref_A, self.traj_est_A)
@@ -151,9 +148,8 @@ if __name__ == "__main__":
     traj_ref_file = "rosbag_2_groundtruth_selected_con.csv"
     trajA_est_file = "KF_GBA_0_sorted_10_55.csv"
     trajB_est_file = "KF_GBA_1_sorted_127_167.csv"
-    trajB_est_file_cont = "KF_GBA_1_sorted_cont.csv"
 
-    calculator = APECalculator(base_loc, traj_ref_file, trajA_est_file, trajB_est_file, trajB_est_file_cont)
+    calculator = APECalculator(base_loc, traj_ref_file, trajA_est_file, trajB_est_file)
     calculator.load_trajectories()
     calculator.register_and_align_trajectories()
     calculator.calculate_ape()
