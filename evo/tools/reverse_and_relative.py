@@ -32,6 +32,7 @@ class TrajectoryConverter:
         self.agent_identifier = agent_identifier
         self.agent_traj_sort = base_path + "KF_GBA_{}_sorted.csv".format(agent_identifier)
         self.groundTruth_orig = base_path + ground_truth
+        self.groundTruth_relative = base_path + ground_truth.rsplit('.', 1)[0] + "_relative.csv"
 
         self.agent_traj = read_tum_trajectory_file(self.agent_traj_sort)
         self.groundTruth = read_tum_trajectory_file(self.groundTruth_orig)
@@ -47,7 +48,7 @@ class TrajectoryConverter:
     def adjust_ground_truth(self):
         first_timestamp_GT = self.groundTruth.timestamps[0]
         self.groundTruth.timestamps -= first_timestamp_GT
-        write_tum_trajectory_file(self.base_path + "rosbag_2_groundtruth_relative.csv", self.groundTruth)
+        write_tum_trajectory_file(self.groundTruth_relative, self.groundTruth)
 
     def run(self):
         self.adjust_agent_trajectory()
