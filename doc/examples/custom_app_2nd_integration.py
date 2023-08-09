@@ -138,18 +138,25 @@ class APECalculator:
                            min_map=min_ape,
                            max_map=max_ape,
                            fig=plt.gcf())
+
+        ax.set_ylim([115, 120])
+
         plot_collection.add_figure("traj (error)", fig_2)
 
         plot_collection.show()
 
 
 if __name__ == "__main__":
-    base_loc = "/media/zuyuan/DATA1TB/Jackal/bags_data_campaign_july_2023/Evaluation/rosbag_2_1_upper_half/"
-    traj_ref_file = "rosbag_2_groundtruth_selected_con.csv"
-    trajA_est_file = "KF_GBA_0_sorted_10_55.csv"
-    trajB_est_file = "KF_GBA_1_sorted_127_167.csv"
+    base = "/media/zuyuan/DATA1TB/Jackal/bags_data_campaign_july_2023/Evaluation/"
+    group_folder = "rosbag_2_3_upper_half"
 
-    calculator = APECalculator(base_loc, traj_ref_file, trajA_est_file, trajB_est_file)
+    traj_ref_file = "rosbag_2_groundtruth_relative.csv"
+    trajA_est_file = "KF_GBA_0_sorted_127_167.csv"
+    trajB_est_file = "KF_GBA_1_sorted_225_258.csv"
+
+    base_path = base + group_folder + "/"
+
+    calculator = APECalculator(base_path, traj_ref_file, trajA_est_file, trajB_est_file)
     calculator.load_trajectories()
     calculator.register_and_align_trajectories()
     calculator.calculate_ape()
