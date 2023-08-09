@@ -3,6 +3,7 @@ import json
 import numpy as np
 from evo.core import trajectory, sync, metrics
 from evo.tools import file_interface, plot
+from copy import deepcopy
 
 
 class APECalculator:
@@ -110,7 +111,12 @@ class APECalculator:
 
         # do not plot sse
         ape_statistics_AB.pop('sse')
-        timestamp = np.append(self.traj_est_A.timestamps, self.traj_est_B_time.timestamps)
+
+        # attach agentB's time to agentA's end
+        traj_est_B_time = deepcopy(self.traj_est_B.timestamps)
+        traj_est_B_time -= self.traj_est_B.timestamps[0]
+        traj_est_B_time += self.traj_est_A.timestamps[-1] + 0.3
+        timestamp = np.append(self.traj_est_A.timestamps, traj_est_B_time)
         plot.error_array(fig_1.gca(), ape_metric_error_AB, timestamp, statistics=ape_statistics_AB,
                          name="APE", title="Combined APE")
 
