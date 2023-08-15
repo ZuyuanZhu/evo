@@ -60,7 +60,7 @@ if __name__ == "__main__":
 
     # config parameters
     base = "/media/zuyuan/DATA1TB/Jackal/bags_data_campaign_july_2023/Evaluation/"
-    group_folder = "rosbag_2_1_upper_half"
+    group_folder = "rosbag_2_1_upper_half_2"
     agents = ["A", "B"]
     agent_traj_start_time = {"A": 10, "B": 127}
     agent_traj_end_time = {"A": 55, "B": 167}

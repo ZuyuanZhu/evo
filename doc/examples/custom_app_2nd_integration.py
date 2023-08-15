@@ -121,7 +121,7 @@ class APECalculator:
 
         # trajectory colormapped with error
         fig_2 = plt.figure(figsize=(7, 7))
-        plot_mode = plot.PlotMode.xz
+        plot_mode = plot.PlotMode.xy
         ax = plot.prepare_axis(fig_2, plot_mode)
         plot.traj(ax, plot_mode, self.traj_ref_A, '--', 'gray', 'reference')
         plot.traj(ax, plot_mode, self.traj_ref_B, '--', 'gray')
@@ -139,7 +139,7 @@ class APECalculator:
                            max_map=max_ape,
                            fig=plt.gcf())
 
-        ax.set_ylim([115, 120])
+        # ax.set_ylim([115, 120])
 
         plot_collection.add_figure("traj (error)", fig_2)
 
