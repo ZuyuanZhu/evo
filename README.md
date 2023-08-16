@@ -31,6 +31,43 @@ See [here](https://github.com/MichaelGrupp/evo/wiki/Formats) for more infos abou
 </a>
 
 ---
+## CSLAM Evaluation
+
+### Data Set: 2nd Integration
+
+Note: modify the paths or filenames accordingly based on your data location or specific requirements.
+
+0. **Preprocess the estimated trajectory**: set the trajectory path, utilize the custom Python script in the evo package:
+```bash
+/home/zuyuan/cslam_ws/src/evo/evo/tools/reverse_and_relative.py
+```
+1. **Aligned and Scale-Corrected Plot**:
+   Navigate to the dataset directory:
+```bash
+zuyuan@Neo:/media/zuyuan/DATA1TB/Jackal/bags_data_campaign_july_2023/Evaluation/rosbag_2_2_upper_half$
+```
+Run the following command to visualize the trajectory:
+```bash
+evo_traj tum KF_GBA_1_sorted_225_258.csv --ref rosbag_2_groundtruth_relative.csv -p --plot_mode=xy -s -a
+```
+
+2. **Plot Absolute Pose Error (APE)**:
+Still in the dataset directory, execute:
+```bash
+evo_ape tum rosbag_2_groundtruth_relative.csv KF_GBA_1_sorted_225_258.csv --align --correct_scale -p --plot_mode xy --save_results results/rosbag2_group2_agent1.zip
+```
+
+3. **Save APE Table**:
+Use the following command to save the APE results as a table:
+```bash
+evo_res results/*.zip -p --save_table results/table.csv
+```
+
+4. **Combined APE Plot for AgentA and AgentB**:
+For this visualization, utilize the custom Python script in the evo package:
+```bash
+python /home/zuyuan/cslam_ws/src/evo/doc/examples/custom_app_2nd_integration.py
+```
 
 ## Why?
 
